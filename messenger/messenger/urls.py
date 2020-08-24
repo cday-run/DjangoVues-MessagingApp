@@ -11,5 +11,5 @@ urlpatterns = [
     url(r'^auth/', include('djoser.urls.authtoken')),
 
     #api routes
-    path('api/' include('chat.urls'))
+    path('api/', include('core.urls'))
 ]

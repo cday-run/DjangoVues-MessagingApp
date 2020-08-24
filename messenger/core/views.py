@@ -4,20 +4,20 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import permissions
 from rest_framework.views import APIView
-from rest_framework.response import response
+from rest_framework.response import Response
 
 from .models import (ChatSession, ChatSessionMessage, ChatSessionPerson, deserialize_user)
 
 
 #Create a class based view to handle the creating and adding users to a chat session
 class ChatSessionView(APIView):
-	permission_classes = (permissions.IsAuthenticated)
+	permission_classes = (permissions.IsAuthenticated,)
 
 	def post(self, request, *ards, **kwargs):
 		user = request.user
 		chat_session = ChatSession.objects.create(owner=user)
 
-		return response({
+		return Response({
 			'status': 200,
 			'uri': chat_session.uri,
 			'message': 'New session successfully created!'
@@ -27,7 +27,7 @@ class ChatSessionView(APIView):
 		#Get the user and chat session information
 		User = get_user_model()
 		uri = kwargs['uri']
-		username = request.data.['username']
+		username = request.data['username']
 		user = User.objects.get(username=username)
 		chat_session = ChatSession.objects.get(uri=uri)
 		owner = chat_session.owner
@@ -54,7 +54,7 @@ class ChatSessionView(APIView):
 
 #Create a class based view to handle adding messages to the Chat
 class ChatMessageView(APIView):
-	permission_classes = (permissions.IsAuthenticated)
+	permission_classes = (permissions.IsAuthenticated,)
 
 	'''Get the messages of the chat room'''
 	def get(self, request, *args, **kwargs):

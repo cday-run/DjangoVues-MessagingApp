@@ -57,7 +57,7 @@
 
 <script>
 
-//const $ = window.jQuery
+const $ = window.jQuery
 const axios = require('axios').default;
 
 export default {
@@ -99,10 +99,11 @@ export default {
         }
       })
       .then((response) => {
-        console.log(response);
-        sessionStorage.setItem('authToken', response.token)
-        sessionStorage.setItem('username', response.username)
-        this.$router.go('/chats')
+        console.log(response.data);
+        sessionStorage.setItem('authToken', response.data.auth_token)
+        sessionStorage.setItem('username', username)
+        console.log(sessionStorage)
+        this.$router.push('/chats')
       }, (error) => {
         console.log(error);
       })
