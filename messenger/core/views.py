@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import Http404
 
 from django.contrib.auth import get_user_model
 
@@ -115,3 +116,6 @@ class ChatMessageView(APIView):
 			'user': deserialize_user(user),
 			'message': message,
 		})
+
+def raise_404(request):
+	raise Http404

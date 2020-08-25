@@ -104,37 +104,39 @@
     <div class="row">
       <div class="col-sm-6 offset-3">
 
-        <div v-if="sessionStarted" id="chat-container" class="card">
-          <div class="card-header text-white text-center font-weight-bold subtle-blue-gradient">
-            Share the page URL to invite new friends
-          </div>
+          <div v-if="!loading && sessionStarted" id="chat-container" class="card">
 
-          <div class='card-body'>
-            <div class='container chat-body'>
-              <div v-for='message in messages' :key='message.id' class='row chat-section'>
-                <template v-if='username === message.user.username'>
-                  <div class='col-sm-7 offset-3'>
-                    <span class='card-text speech-bubble speech-bubble-user float-right text-white subtle-blue-gradient'>
-                      {{ message.message }}
-                    </span>
-                  </div>
-                  <div class='col-sm-2'>
-                    <img class='rounded-circle' :src='`http://placehold.it/40/007bff/fff&text=${message.user.username[0].toUpperCase()}`' />
-                  </div>
-                </template>
-                <template v-else>
-                  <div class='col-sm-2'>
-                    <img class="rounded-circle" :src="`http://placehold.it/40/333333/fff&text=${message.user.username[0].toUpperCase()}`" />
-                  </div>
-                  <div class='col-sm-7'>
-                    <span class="card-text speech-bubble speech-bubble-peer float-left">
-                      {{ message.message }}
-                    </span>
-                  </div>
-                </template>
+            <div class="card-header text-white text-center font-weight-bold subtle-blue-gradient">
+              Share the chat link to invite new friends
+            </div>
+
+            <div class='card-body'>
+              <div class='container chat-body'>
+                <div v-for='message in messages' :key='message.id' class='row chat-section'>
+                  <template v-if='username === message.user.username'>
+                    <div class='col-sm-7 offset-3'>
+                      <span class='card-text speech-bubble speech-bubble-user float-right text-white subtle-blue-gradient'>
+                        {{ message.message }}
+                      </span>
+                    </div>
+                    <div class='col-sm-2'>
+                      <img class='rounded-circle' :src='`http://placehold.it/40/007bff/fff&text=${message.user.username[0].toUpperCase()}`' />
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class='col-sm-2'>
+                      <img class="rounded-circle" :src="`http://placehold.it/40/333333/fff&text=${message.user.username[0].toUpperCase()}`" />
+                    </div>
+                    <div class='col-sm-7'>
+                      <span class="card-text speech-bubble speech-bubble-peer float-left">
+                        {{ message.message }}
+                      </span>
+                    </div>
+                  </template>
+                </div>
               </div>
             </div>
-          </div>
+          
 
           <div class="card-footer text-muted">
               <form @submit.prevent='sendMessage'>
@@ -150,20 +152,31 @@
             </div>
           </div>
 
-        <div v-else>
-          <h3 class="text-center">Welcome !</h3>
 
-          <br />
 
-          <p class="text-center">
-            To start chatting with friends click on the button below, it'll start a new chat session
-            and then you can invite your friends over to chat!
-          </p>
+          <div v-else-if="!loading && !sessionStarted">
 
-          <br />
+            <h3 class="text-center">Welcome to Messenger!</h3>
+            <br />
+            <p class="text-center">
+              To start start a new chat session click the button below,
+              and then you can invite your friends over to chat!
+            </p>
+            <br />
+            <button @click="startChatSession" class="btn btn-primary btn-lg btn-block">Start Chatting</button>
 
-          <button @click="startChatSession" class="btn btn-primary btn-lg btn-block">Start Chatting</button>
-        </div>
+          </div>
+
+
+          <div v-else>
+
+            <div class='loading'>
+              <img src='../assets/hourglass.png' />
+              <h5>Loading...</h5>
+            </div>
+
+          </div>
+
 
       </div>
     </div>
@@ -180,7 +193,8 @@ export default {
     return {
       sessionStarted: false,
       messages: [],
-      message: ''
+      message: '',
+      loading: true,
     }
   },
 
@@ -188,8 +202,17 @@ export default {
     this.username = sessionStorage.getItem('username')
     if (this.$route.params.uri) {
       this.joinChat()
+      this.connectToWebsocket()
     }
-    this.connectToWebsocket()
+    setTimeout(() => { this.loading = false }, 2000)
+    console.log(this.loading)
+  },
+
+  updated() {
+    const chatBody = this.$refs.chatBody
+    if (chatBody) {
+      chatBody.scrollTop = chatBody.scrollHeight
+    }
   },
 
   methods: {
@@ -263,6 +286,7 @@ export default {
       })
       .then((response)=> {
         this.messages = response.data.messages
+        setTimeout(() => {this.loading = false }, 2000)
       }, (error)=> {
         console.log(error);
       })

@@ -74,9 +74,6 @@ export default {
       axios({
         method: 'post',
         url: 'http://localhost:8000/auth/users/create/',
-        headers: {
-          'Authorization': `Token ${sessionStorage.getItem('authToken')}`,
-        },
         data: {
           email: email,
           username: username,
