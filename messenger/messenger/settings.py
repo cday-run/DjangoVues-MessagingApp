@@ -14,7 +14,7 @@ SECRET_KEY = 'g*2cq*siy%%-w)z#p2&--h1^@+5pbyrs_h(@6j2^r5$=%j1v+4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -32,9 +32,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
+    'notifications',
 
     #Local
     'core',
+    
 ]
 
 MIDDLEWARE = [
@@ -134,4 +136,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         
     ),
+}
+
+
+CELERY_TASK_ALWAYS_EAGER = True
+
+NOTIFICATIONS_CHANNELS = {
+   'websocket': 'core.channels.BroadCastWebSocketChannel'
 }

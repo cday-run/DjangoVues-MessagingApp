@@ -186,6 +186,10 @@ export default {
 
   created() {
     this.username = sessionStorage.getItem('username')
+    if (this.$route.params.uri) {
+      this.joinChat()
+    }
+    this.connectToWebsocket()
   },
 
   methods: {
@@ -205,6 +209,7 @@ export default {
         console.log(error);
       })
     },
+
     sendMessage() {
       axios({
         method: 'post',
@@ -217,12 +222,76 @@ export default {
         }
       })
       .then((response) => {
-        console.log(response);
-        this.messages.push(response.data)
+        // console.log(response);
+        // this.messages.push(response.data)
         this.message = ''
       }, (error) => {
         console.log(error);
       })
+    },
+
+    joinChat() {
+      const uri = this.$route.params.uri
+      axios({
+        method: 'patch',
+        url: `http://localhost:8000/api/chats/${uri}/`,
+        headers: {
+          'Authorization': `Token ${sessionStorage.getItem('authToken')}`,
+        },
+        data: {
+          username: this.username
+        }
+      })
+      .then((response)=>{
+        const user = response.data.people.find((person) => person.username === this.username)
+        if (user) {
+          this.sessionStarted = true
+          this.loadChatHistory()
+        }
+      }, (error) => {
+        console.log(error);
+      })
+    },
+
+    loadChatHistory() {
+      axios({
+        method: 'get',
+        headers: {
+          'Authorization': `Token ${sessionStorage.getItem('authToken')}`,
+        },
+        url: `http://localhost:8000/api/chats/${this.$route.params.uri}/messages/`,
+      })
+      .then((response)=> {
+        this.messages = response.data.messages
+      }, (error)=> {
+        console.log(error);
+      })
+    },
+
+    connectToWebsocket() {
+      const websocket = new WebSocket(`ws://localhost:8081/${this.$route.params.uri}`)
+      websocket.onopen = this.onOpen
+      websocket.onclose = this.onClose
+      websocket.onmessage = this.onMessage
+      websocket.onerror = this.onError
+    },
+
+    onOpen(e) {
+      console.log('connected', e.data)
+    },
+
+    onClose(e) {
+      console.log('disconnected', e.data)
+      setTimeout(this.connectToWebsocket, 5000)
+    },
+
+    onMessage(e) {
+      const message = JSON.parse(e.data)
+      this.messages.puch(message)
+    },
+
+    onError(e) {
+      console.log('error occured', e.data)
     }
   }
 }

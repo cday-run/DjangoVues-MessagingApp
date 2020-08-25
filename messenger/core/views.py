@@ -6,6 +6,8 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from notifications.signals import notify
+
 from .models import (ChatSession, ChatSessionMessage, ChatSessionPerson, deserialize_user)
 
 
@@ -68,7 +70,7 @@ class ChatMessageView(APIView):
 		#retrieve all the messages in the chat room
 		messages = [
 			chat_session_message.to_json()
-			for chat_session_message in chat_session_messages.all()
+			for chat_session_message in chat_session.messages.all()
 		]
 
 		return Response ({
@@ -85,10 +87,26 @@ class ChatMessageView(APIView):
 		message = request.data['message']
 
 		#Create the message in the database
-		ChatSessionMessage.objects.create(
+		chat_session_message = ChatSessionMessage.objects.create(
 			user=user,
 			chat_session=chat_session,
 			message=message
+		)
+
+		notif_args = {
+			'source': user,
+            'source_display_name': user.username,
+            'category': 'chat', 'action': 'Sent',
+            'obj': chat_session_message.id,
+            'short_description': 'You have a new message', 'silent': True,
+            'extra_data': {
+            	'uri': chat_session.uri,
+            	'message': chat_session_message.to_json()
+            }
+		}
+
+		notify.send(
+			sender=self.__class__, **notif_args, channels=['websocket']
 		)
 
 		return Response ({
