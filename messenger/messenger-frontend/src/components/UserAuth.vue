@@ -36,6 +36,13 @@
                 </div>
               </div>
               <button type='submit' class='btn btn-block btn-primary'>Sign up</button>
+              <div v-if='error != null' class='error-message'>
+                <div v-for='item in error'>
+                  <li class='py-1'>
+                    {{ item }}
+                  </li>
+                </div>
+              </div>
             </form>
           </div>
           <div class='tab-pane fade' id='signin' role='tabpanel' aria-labelledby='signin-tab'>
@@ -63,7 +70,10 @@ const axios = require('axios').default;
 export default {
   data () {
     return {
-      email: '', username: '', password: ''
+      email: '', 
+      username: '', 
+      password: '',
+      error: null
     }
   },
   methods: {
@@ -72,19 +82,21 @@ export default {
       const username = document.querySelector('#username').value;
       const password = document.querySelector('#password').value;
       axios({
-        method: 'post',
-        url: 'http://localhost:8000/auth/users/create/',
+        method: 'POST',
+        url: 'http://127.0.0.1:8000/auth/users/',
         data: {
-          email: email,
-          username: username,
-          password: password
+          'username': username,
+          'email': email,
+          'password': password
         }
       })
       .then((response) => {
-        console.log(response);
-        this.signIn();
-      }, (error) => {
-        console.log(error);
+        console.log(response)
+        this.signIn()
+      })
+      .catch ((error) => {
+        console.log(error.response.data.password);
+        this.error = error.response.data.password
       })
     },
     signIn () {
@@ -121,7 +133,10 @@ export default {
     logout() {
       axios({
         method: 'post',
-        url: 'http://localhost:8000/auth/token/logout/'
+        url: 'http://localhost:8000/auth/token/logout/',
+        headers: {
+          'Authorization': `Token ${sessionStorage.getItem('authToken')}`,
+        }
       })
       .then((response) => {
         console.log(response);

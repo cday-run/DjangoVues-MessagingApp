@@ -9,6 +9,8 @@ def application(env, start_response):
 
 	exchange = env['PATH_INFO'].replace('/', '')
 
+	print(exchange)
+
 	channel.exchange_declare(exchange=exchange, exchange_type='fanout')
 
 
@@ -25,10 +27,10 @@ def application(env, start_response):
 	        env.get('HTTP_ORIGIN', ''))
 
 	def keepalive():
-		#call websocket connection every 45sec and keep it alive
+		#call websocket connection every 25sec and keep it alive
 		try:
 			uwsgi.websocket_recv_nb()
-			connection.add_timeout(45,keepalive)
+			connection.add_timeout(25,keepalive)
 		except OSError as error:
 			connection.close()
 			print(error)

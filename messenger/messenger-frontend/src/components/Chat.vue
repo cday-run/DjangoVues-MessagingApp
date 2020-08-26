@@ -104,7 +104,7 @@
     <div class="row">
       <div class="col-sm-6 offset-3">
 
-          <div v-if="!loading && sessionStarted" id="chat-container" class="card">
+          <div v-if="!loading && sessionStarted" refs='chatBody' id="chat-container" class="card">
 
             <div class="card-header text-white text-center font-weight-bold subtle-blue-gradient">
               Share the chat link to invite new friends
@@ -205,7 +205,6 @@ export default {
       this.connectToWebsocket()
     }
     setTimeout(() => { this.loading = false }, 2000)
-    console.log(this.loading)
   },
 
   updated() {
@@ -253,6 +252,7 @@ export default {
       })
     },
 
+    //look into 'success param'
     joinChat() {
       const uri = this.$route.params.uri
       axios({
@@ -293,29 +293,31 @@ export default {
     },
 
     connectToWebsocket() {
-      const websocket = new WebSocket(`ws://localhost:8081/${this.$route.params.uri}`)
-      websocket.onopen = this.onOpen
-      websocket.onclose = this.onClose
-      websocket.onmessage = this.onMessage
-      websocket.onerror = this.onError
+      const ws = new WebSocket(`ws://localhost:8081/${this.$route.params.uri}`)
+      ws.onopen = this.onOpen
+      ws.onclose = this.onClose
+      ws.onmessage = this.onMessage
+      ws.onerror = this.onError
     },
 
-    onOpen(e) {
-      console.log('connected', e.data)
+    onOpen(event) {
+      console.log('connected', event.data)
     },
 
-    onClose(e) {
-      console.log('disconnected', e.data)
-      setTimeout(this.connectToWebsocket, 5000)
+    onClose(event) {
+      console.log('disconnected', event.data)
+      setTimeout(this.connectToWebsocket, 3000)
     },
 
-    onMessage(e) {
-      const message = JSON.parse(e.data)
-      this.messages.puch(message)
+    onMessage(event) {
+      console.log(event.data)
+      const message = JSON.parse(event.data)
+      console.log(message)
+      this.messages.push(message)
     },
 
-    onError(e) {
-      console.log('error occured', e.data)
+    onError(event) {
+      console.log('error occured', event.data)
     }
   }
 }

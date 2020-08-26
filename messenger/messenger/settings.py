@@ -14,7 +14,7 @@ SECRET_KEY = 'g*2cq*siy%%-w)z#p2&--h1^@+5pbyrs_h(@6j2^r5$=%j1v+4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -71,6 +71,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'messenger.wsgi.application'
+
+ASGI_APPLICATION = 'messenger.asgi.application'
 
 
 # Database
@@ -132,7 +134,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         
     ),
