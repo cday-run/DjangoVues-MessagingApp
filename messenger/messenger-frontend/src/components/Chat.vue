@@ -63,7 +63,7 @@
     width: 0;
     height: 0;
     border: 20px solid transparent;
-    border-left-color: #007bff;
+    border-left-color: #5cb85c;
     border-right: 0;
     border-top: 0;
     margin-top: -10px;
@@ -100,27 +100,27 @@
 </style>
 
 <template>
-  <div class="container">
+  <div class="container py-1">
     <div class="row">
       <div class="col-sm-6 offset-3">
 
-          <div v-if="!loading && sessionStarted" refs='chatBody' id="chat-container" class="card">
+          <div v-if="!loading && sessionStarted" id='chat-container' class='card bg-secondary'>
 
-            <div class="card-header text-white text-center font-weight-bold subtle-blue-gradient">
+            <div class='card-header text-white text-center font-weight-bold bg-success'>
               Share the chat link to invite new friends
             </div>
 
-            <div class='card-body'>
-              <div class='container chat-body'>
+            <div class='card-body bg-dark'>
+              <div class='container chat-body bg-dark'>
                 <div v-for='message in messages' :key='message.id' class='row chat-section'>
                   <template v-if='username === message.user.username'>
                     <div class='col-sm-7 offset-3'>
-                      <span class='card-text speech-bubble speech-bubble-user float-right text-white subtle-blue-gradient'>
+                      <span class='card-text speech-bubble speech-bubble-user float-right text-white bg-success'>
                         {{ message.message }}
                       </span>
                     </div>
                     <div class='col-sm-2'>
-                      <img class='rounded-circle' :src='`http://placehold.it/40/007bff/fff&text=${message.user.username[0].toUpperCase()}`' />
+                      <img class='rounded-circle' :src='`http://placehold.it/40/5cb85c/fff&text=${message.user.username[0].toUpperCase()}`' />
                     </div>
                   </template>
                   <template v-else>
@@ -128,7 +128,7 @@
                       <img class="rounded-circle" :src="`http://placehold.it/40/333333/fff&text=${message.user.username[0].toUpperCase()}`" />
                     </div>
                     <div class='col-sm-7'>
-                      <span class="card-text speech-bubble speech-bubble-peer float-left">
+                      <span class="card-text speech-bubble speech-bubble-peer float-left bg-light">
                         {{ message.message }}
                       </span>
                     </div>
@@ -145,7 +145,7 @@
                     <input v-model='message' type='text' placeholder='Type a message' />
                   </div>
                   <div class="col-sm-2">
-                    <button class="btn btn-primary">Send</button>
+                    <button class="btn btn-success">Send</button>
                   </div>
                 </div>
               </form>
@@ -156,14 +156,14 @@
 
           <div v-else-if="!loading && !sessionStarted">
 
-            <h3 class="text-center">Welcome to Messenger!</h3>
+            <h3 class="text-center">Welcome to Django Vues!</h3>
             <br />
             <p class="text-center">
               To start start a new chat session click the button below,
               and then you can invite your friends over to chat!
             </p>
             <br />
-            <button @click="startChatSession" class="btn btn-primary btn-lg btn-block">Start Chatting</button>
+            <button @click="startChatSession" class="btn btn-success btn-lg btn-block">Start Messaging</button>
 
           </div>
 

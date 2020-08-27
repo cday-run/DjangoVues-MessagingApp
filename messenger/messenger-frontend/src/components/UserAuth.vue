@@ -9,16 +9,17 @@
 </style>
 
 <template>
-  <div class='container'>
-    <h1 class='text-center'>Welcome to Messenger</h1>
+  <div class='container py-1'>
+    <h1 class='text-center'>Welcome to Django Vues!</h1>
+    <h5 class='text-center'>A Chat App Made with Django and Vue.js</h5>
     <div id='auth-container' class='row'>
       <div class='col-sm-4 offset-sm-4'>
         <ul class='nav nav-tabs nav-justified' id='myTab' role='tablist'>
           <li class='nav-item'>
-            <a class='nav-link active' id='signup-tab' data-toggle='tab' href='#signup' role='tab' aria-controls='signup' aria-selected='true'>Sign Up</a>
+            <a class='nav-link active text-success' id='signup-tab' data-toggle='tab' href='#signup' role='tab' aria-controls='signup' aria-selected='true'>Sign Up</a>
           </li>
           <li class='nav-item'>
-            <a class='nav-link' id='signin-tab' data-toggle='tab' href='#signin' role='tab' aria-controls='signin' aria-selected='false'>Sign In</a>
+            <a class='nav-link text-success' id='signin-tab' data-toggle='tab' href='#signin' role='tab' aria-controls='signin' aria-selected='false'>Sign In</a>
           </li>
         </ul>
         <div class='tab-content' id='myTabContent'>
@@ -35,10 +36,10 @@
                   <input v-model='password' type='password' class='form-control' id='password' placeholder='Password' required>
                 </div>
               </div>
-              <button type='submit' class='btn btn-block btn-primary'>Sign up</button>
+              <button type='submit' class='btn btn-block btn-success'>Sign up</button>
               <div v-if='error != null' class='error-message'>
                 <div v-for='item in error'>
-                  <li class='py-1'>
+                  <li class='py-1 text-light'>
                     {{ item }}
                   </li>
                 </div>
@@ -53,7 +54,7 @@
               <div class='form-group'>
                 <input v-model='password' type='password' class='form-control' id='password' placeholder='Password' required>
               </div>
-              <button type='submit' class='btn btn-block btn-primary'>Sign in</button>
+              <button type='submit' class='btn btn-block btn-success'>Sign in</button>
             </form>
           </div>
         </div>
