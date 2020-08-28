@@ -79,10 +79,8 @@ Furthermore, as was required, this application uses the Django framework on the 
 - Reference on Vue.js here: https://vuejs.org/
 - HTML template source: Osaetin Daniel
 
-2. Notes:
-- I decided to try and use Celery and RabbitMQ over Django Channels (though it may have been more straightforward for this project) to manage the websockets for the project, as I thought it would be interesting to learn methods outside of Django for managing websockets in the future, incase I decide to build an application that does not use Django on the back-end.
 
-3. Console Commands:
+2. Console Commands:
 - sudo systemctl start rabbitmq-server
 - celery -A messenger worker -l info
 - uwsgi --http :8081 --gevent 4 --module websocket --gevent-monkey-patch --master
